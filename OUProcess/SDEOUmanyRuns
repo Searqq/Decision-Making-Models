@@ -1,0 +1,78 @@
+% parameters for EM
+lambda = 0;
+mu = 1;
+Xzero = 1;
+
+
+T = 1;			% time
+N = 2^14;		% how fine
+dt = T / N;		% intervals
+B = 2;		% barrier value
+B2 = -B;
+
+% Increasing the barrier value increases the average amount of time
+% (up to a certain point because if T isn't large enough then simulation
+% won't get that far).
+
+% Higher barrier basically corresponds to a decision that is "harder"
+% to make meaning more time would be necessary to integrate the pertainent
+% information, so this correlation makes sense.
+
+randn('state',sum(100*clock))		% clock to change the seed with each run
+
+% random walk
+dW = sqrt(dt) * randn(1,N);
+
+R = 4;
+Dt = R * dt;
+L = N / R;
+
+% parameters for OU
+Xem = zeros(1,L);
+Xtemp = Xzero;
+a = 0.1;
+A = 0;
+c = 1;
+
+% iteration for EM
+
+for j = 1:L
+ Winc = sum(dW(R * (j-1) + 1 : R * j));
+ Xtemp = Xtemp + Dt * lambda * (a * Xtemp + A) + mu * c * Winc;
+ Xem(j) = Xtemp;
+end
+
+len = length(Xem);
+timeint = [0:Dt:T];
+
+
+% finds the time for which Xem will be greater than B, ie when the first instance is
+
+for i = 1:len
+	 if Xem(i) > B
+		timestore(count) = timeint(i);
+		break;
+     end
+
+     %if Xem(i) < B2
+     %	timestore2(count) = timeint(i);
+     %	break;
+     %end
+end
+
+i;
+
+DtSize = size([0:Dt:T]);
+%XemSize = size([Xzero,Xem(1):Xem(i)]);
+
+for j = i:len
+	Xem(j) = B;
+end
+
+
+xs = [0:Dt:T];
+ys = [Xzero,Xem];
+
+plot(xs,ys,'r--'),
+hold on
+

@@ -1,0 +1,24 @@
+
+N = 1000;
+
+randn('state', 100);
+
+T = 100;
+
+dt = T / N;
+dW = zeros(1,N);
+W = zeros(1,N);
+
+dW = sqrt(dt) * (randn(1,N));       %modify stdev
+W = cumsum(dW);
+
+figure
+
+% x axis is t, y axis is W(t)
+
+subplot(2,1,1)
+plot([0:dt:T],[0,W],'r-')
+
+subplot(2,1,2)
+hist(dW)
+

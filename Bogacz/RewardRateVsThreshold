@@ -1,0 +1,12 @@
+RRs = zeros(1,200);
+
+for B = 0.01:0.01:2
+	run BogaczRun;
+	RRs(int64(B * 100)) = RRcalc;
+end
+
+max(RRs)
+index = find(RRs == max(RRs))
+plot([0.01:0.01:2],RRs)
+xlabel('Threshold')
+ylabel('Reward Rate')

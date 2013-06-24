@@ -1,0 +1,71 @@
+runs = 100;      % how many runs to find the first instance
+timestore = zeros(1,runs);     % preallocation
+timestore2 = zeros(1,runs);
+timeb4resp = [];
+
+% loop for timestore. Before, I tried looping randn('state',x), 
+% so states would depend on which iteration, but this did not work.
+% This file uses SDEOUmanyRuns to load each entry of timestore
+% according to the run, creating a one by 'runs' vector. Each
+% iterate seems to do the same as just looking randn but for some reason
+% looping randn just gave timestore a bunch of zeroes.
+
+Dinterv = 1;
+
+for count = 1:runs
+	run OUBogaczVer;
+	%pause(Dinterv);
+end
+
+timestore2(timestore2==0) = [];
+timestore(timestore==0) = [];
+
+%for k = 1:length(timestore)-1
+%	timeb4resp(k) = abs(timestore(k+1) - timestore(k));
+%end
+
+%av_time_b4 = mean(timeb4resp);
+
+T0 = 0;
+Dp = 0;
+
+
+ztil = B / lambda;
+atil = (1 / c)^2;
+thresh = ztil + 1 / lambda;
+%function f = dawson(z)
+%	f = exp(-z^2) * quad('exp(x^2)',0,z);
+%end
+
+erf1 = erf((atil / lambda)^0.5 * (1 + lambda * ztil));
+erf2 = erf((atil / lambda)^0.5 * (1 - lambda * ztil));
+erfsimp = erf((atil / lambda)^0.5);
+erfcdot = erfc((atil / lambda)^0.5);
+erfcplus = erfc((atil / lambda)^0.5 * (1 + lambda * ztil));
+erfcminus = erfc((atil / lambda)^0.5 * (1 - lambda * ztil));
+
+function d1 = D_12(x1,x2)
+	d1 = quad('dawson(x)',x1,x2);
+end
+
+D1 = D_12((atil / lambda)^0.5,(atil / lambda)^0.5 * (1 + lambda * ztil));
+D2 = D_12((atil / lambda)^0.5 * (1 - lambda * ztil), (atil / lambda)^0.5);
+
+RRinv = Dinterv + 2 / lambda * D1 + (Dinterv - 2 / lambda * D2) * ((erfcdot / erfcplus - 1) / (erfcminus / erfcplus - erfcdot / erfcplus));
+
+hist(Xem,100)
+
+
+average_time = mean(timestore);
+DTime = 2 / lambda * (((erfcminus / erfcplus - erfcdot / erfcplus) * D1 - (erfcdot / erfcplus - 1) * D2) / (erfcminus / erfcplus - 1));
+ER2 = length(timestore2) / runs;
+ER = (erfcdot / erfcplus - 1) / (erfcminus / erfcplus - 1);
+RR = 1 / RRinv;
+%RR = (1 - ER2) / (DTime + 1);
+%RRcalc = 
+differz = average_time - DTime;
+
+%sdevtime = std(timestore);
+%clear all;
+
+%average_time2 = mean(timestore2)r

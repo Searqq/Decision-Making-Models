@@ -1,0 +1,9 @@
+
+spread = zeros(1,14);
+
+for pow = 1:14
+	run StorageOfRuns
+	spread(pow) = average_time
+end
+
+stdev = std(spread)

@@ -1,0 +1,59 @@
+randn('state',100)
+lambda = -2;
+mu = 1;
+Xzero = 1;
+T = 10;
+N = 2^9 * 100;
+dt = T / N;
+
+% random walk
+dW = sqrt(dt) * randn(1,N);
+W = cumsum(dW);
+
+R = 4;
+Dt = R * dt;
+L = N / R;
+Xem = zeros(1,L);
+Xtemp = Xzero;
+a = 4;
+A = 0;
+c = 1;
+
+% OU times 100.png is with A = 1.5 c = 1 a = 4
+
+% const = (exp(a * c) - A) / a;
+
+%%% exact solution %%%
+% Xtrue = (exp(a * ([dt:dt:T] + const))-A + mu * W) / a;
+
+% plot([0:dt:T],[Xzero,Xtrue],'m-'),
+% hold on
+
+
+
+for j = 1:L
+ Winc = sum(dW(R * (j-1) + 1:R * j));
+ Xtemp = Xtemp + Dt * lambda * (a * Xtemp + A) + mu * c * Winc;
+ Xem(j) = Xtemp;
+end
+
+figure
+
+subplot(2,1,1)
+plot([0:Dt:T],[Xzero,Xem],'r--'),
+
+subplot(2,1,2)
+hist(Xem,100)
+
+
+avg = mean(Xem)
+stand = std(Xem)
+
+% stdresult = strcat('stdev: ',num2str(stand));
+
+% text(0,125/100*max(hist(Xem)),stdresult)
+
+
+%% hold off
+
+%% emerr = abs(Xem(end) - Xtrue(end))

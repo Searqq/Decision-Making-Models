@@ -1,0 +1,70 @@
+
+%runs = 100;      % how many runs to find the first instance
+timestore = zeros(1,runs);     % preallocation
+timestore2 = zeros(1,runs);
+timeb4resp = [];
+
+
+% loop for timestore. Before, I tried looping randn('state',x), 
+% so states would depend on which iteration, but this did not work.
+% This file uses SDEOUmanyRuns to load each entry of timestore
+% according to the run, creating a one by 'runs' vector. Each
+% iterate seems to do the same as just looking randn but for some reason
+% looping randn just gave timestore a bunch of zeroes.
+
+Dinterv = 1;
+
+for count = 1:runs
+	run BogaczVer;
+	%pause(Dinterv);
+end
+
+timestore2(timestore2==0) = [];
+%timestore(timestore==0) = [];
+
+%for k = 1:length(timestore)-1
+%	timeb4resp(k) = abs(timestore(k+1) - timestore(k));
+%end
+
+%av_time_b4 = mean(timeb4resp);
+
+
+%line([0,T],[B,B])
+%line([0,T],[B2,B2])
+%hold off
+%subplot(2,2,2)
+T0 = 0;
+Dp = 0;
+
+
+ztil = B / A;
+atil = (A / c)^2;
+
+zaexp = exp(2*ztil*atil);
+D_T = (Dinterv + T0 + Dp - ztil);
+icexp = exp(2*XzeroA*atil);
+outexp = exp(2*(ztil + XzeroA)*atil);
+
+
+RRinv = ztil + Dinterv + T0 + D_T * 1 / zaexp + (1 + zaexp) * (D_T * (1-icexp) + XzeroA * icexp * (1-zaexp)) / (zaexp * (outexp - 1));
+
+%hist(timestore, 100)
+
+
+%tsrev = timestore(timestore == 0) = [];
+%tsrev2 = timestore2(timestore2 == 0) = [];
+average_time = mean(timestore);
+DTime = ztil * tanh(ztil * atil) + (2 * ztil * (1-1/zaexp) / (zaexp-1/zaexp)-XzeroA);
+ER2 = length(timestore2) / runs;
+ER = 1 / (1 + zaexp) - ((1-1/icexp)/(zaexp-1/zaexp));
+RR = (1 - ER2) / (DTime + 1);
+RRcalc = 1 / RRinv;
+differz = average_time - DTime;
+
+
+%sdevtime = std(timestore);
+%clear all;
+
+
+
+%average_time2 = mean(timestore2)

@@ -1,0 +1,23 @@
+runception = 1;
+timez = zeros(1,runception);
+stdz = zeros(1,runception);
+ERz = zeros(1,runception);
+
+for star = 1:runception
+	run BogaczRun;
+	timez(star) = average_time;
+	stdz(star) = sdevtime;
+end
+
+real_average = mean(timez)
+std_of_real_average = std(timez);
+real_stdev = mean(stdz)
+
+ztil = B / lambda;
+atil = (1 / c)^2;
+thresh = ztil + 1 / lambda
+
+DTime = ztil * tanh(ztil * atil) + (2 * ztil * (1-exp(-2*Xzero / A*atil)) / (exp(2 * ztil * atil)-exp(-2 * ztil * atil))-Xzero / A)
+ER = 1 / (1 + exp(2*ztil*atil)) - ((1-exp(-2*Xzero/A*atil))/(exp(2*ztil*atil)-exp(-2*ztil*atil)))
+
+

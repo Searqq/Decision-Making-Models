@@ -1,0 +1,12 @@
+runtotal = 300;
+
+differs = zeros(1,runtotal);
+
+for runs = 1:runtotal
+	run BogaczRun;
+	differs(runs) = differz;
+end
+
+plot([0:1:runtotal],[0,differs])
+xlabel('Number of Runs')
+ylabel('Difference of Times')

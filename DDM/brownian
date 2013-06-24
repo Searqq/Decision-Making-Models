@@ -1,0 +1,40 @@
+randn('state',200)
+T = 5;
+N = 5000;
+mu = 0.5;
+dt = T / N;
+t = [dt:dt:T];
+M = 2000;
+dW = sqrt(dt) * randn(M,N);
+W = cumsum(dW,2);
+U = exp(repmat(t,[M 1]) + mu * W);  
+Umean = mean(U);
+
+search = [1,Umean];
+
+%%%% needs work
+%i = 1;
+%Len = length(search);
+%while (i <= Len)
+%	if search(i)>50
+%		i = Len+1
+%    end
+%end
+
+
+%plot([0,t],[1,Umean],'b-'),
+%hold on
+
+%line([0,T],[50,50])
+
+plot([0,t],[ones(5,1),U(1:5,:)],'r--'),
+%hold off
+
+count = 0;
+
+
+xlabel('t','FontSize',16)
+ylabel('U(t)','FontSize',16,'Rotation',0,'HorizontalAlignment','right')
+%legend('mean of 1000 paths','Five individual paths',2)
+
+averr = norm((Umean - exp(9 * t / 8)),'inf')

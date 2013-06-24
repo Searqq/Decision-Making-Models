@@ -1,0 +1,33 @@
+
+runs = 100;      % how many runs to find the first instance
+timestore = zeros(1,runs);     % preallocation
+timestore2 = zeros(1,runs);
+
+% loop for timestore. Before, I tried looping randn('state',x), 
+% so states would depend on which iteration, but this did not work.
+% This file uses SDEOUmanyRuns to load each entry of timestore
+% according to the run, creating a one by 'runs' vector. Each
+% iterate seems to do the same as just looking randn but for some reason
+% looping randn just gave timestore a bunch of zeroes.
+
+
+
+for count = 1:runs
+	run SDEOUmanyRuns;
+end
+
+
+
+line([0,T],[B,B])
+%line([0,T],[B2,B2])
+hold off
+%subplot(2,2,2)
+
+%hist(timestore, 100)
+
+timestore;
+%tsrev = timestore(timestore == 0) = [];
+%tsrev2 = timestore2(timestore2 == 0) = [];
+average_time = mean(timestore)
+sdevtime = std(timestore)
+%average_time2 = mean(timestore2)
