@@ -4,11 +4,9 @@ function f = funcOUtele(t1,t2,p)
 global Xzero = 0;
 
 
-T = t2-t1; %ceil(randtimes(endint));			% time
+T = t2-t1;			% time
 N = 2^12;		% how fine
 dt = T / N;		% intervals
-
-
 
 
 randn('state',sum(100*clock))		% clock to change the seed with each run
@@ -23,14 +21,7 @@ Xem = zeros(1,L);
 Xtemp = Xzero;
 lambda = -1;
 c = 0.75;
-
-
-if p == 1
-    mu = 1;
-elseif p == -1
-    mu = -1;
-end
-
+mu = p;
 
 
 for j = 1:L
@@ -47,24 +38,12 @@ timeint = [0:Dt:T];
 %	 if Xem(i) > B
 %		timestore(count) = timeint(i);
 %		break;
- %    
-  %   elseif Xem(i) < B2
-   %  	timestore2(count) = timeint(i);
-    % 	break;
-     %end
+%    
+%    elseif Xem(i) < B2
+%  	    timestore2(count) = timeint(i);
+% 	    break;
+%    end
 %end
-
-
-
-%XemSize = size([Xzero,Xem(1):Xem(i)]);
-
-%for j = i:len
-%	Xem(j) = B;
-%end
-
-
-%a = Tinter();
-%plot([0:Dt:T],[0,Xem])
 
 
 timesteps = (t2 - t1) / length(Xem);
